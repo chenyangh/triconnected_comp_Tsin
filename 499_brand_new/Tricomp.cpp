@@ -53,7 +53,7 @@ void graph::read_edges_from_file(string path_of_file)
 // to make the first child be the fist entry in the list
 // refered to http://cobweb.cs.uga.edu/~rwr/STUDENTS/fsunms.pdf PAGE 21, and changed
 // recursion to iteration
-// --Chenyang 31st Jan
+// --Chenyang 31st Jan.
 //=============================================
 void graph::dfs_1()
 {
