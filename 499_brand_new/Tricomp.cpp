@@ -49,8 +49,11 @@ void graph::read_edges_from_file(string path_of_file)
 }
 
 //=============================================
-//
-//
+// Perform a first DFS to calcuate LOW1 LOW2 and adjust the adjacancy list
+// to make the first child be the fist entry in the list
+// refered to http://cobweb.cs.uga.edu/~rwr/STUDENTS/fsunms.pdf PAGE 21, and changed
+// recursion to iteration
+// --Chenyang 31st Jan
 //=============================================
 void graph::dfs_1()
 {

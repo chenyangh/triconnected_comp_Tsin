@@ -26,7 +26,7 @@
 /* Begin PBXFileReference section */
 		E531CF1A1B939F6D00010F48 /* Tools.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Tools.h; sourceTree = "<group>"; };
 		E592B8901B8DFCF7004C752E /* 499_brand_new */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = 499_brand_new; sourceTree = BUILT_PRODUCTS_DIR; };
-		E592B8931B8DFCF7004C752E /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		E592B8931B8DFCF7004C752E /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; usesTabs = 0; };
 		E592B89A1B8DFD3D004C752E /* Tricomp.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Tricomp.h; sourceTree = "<group>"; };
 		E5D370F51B8EBCF800593B2E /* Tricomp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Tricomp.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */

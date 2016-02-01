@@ -28,13 +28,13 @@ private:
     data_container* top_elem;
     data_container* elems_list;     // elements
     int number_of_elems = 0;
+    data_container* container_to_push = new data_container;
     
 public:
     
     void push(T to_push)
     {
         try {
-            data_container* container_to_push = new data_container;
             container_to_push->this_data = to_push;
             if ( number_of_elems > 0)
                 container_to_push->next = top_elem;
