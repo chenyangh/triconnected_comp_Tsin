@@ -21,7 +21,10 @@ public:
     ~graph();
     graph(int number_of_vertices);
     void read_edges_from_file(string path_of_file);
+    
     void dfs_1();
+    void dfs_1_recur(int);
+    
     void print_adjacency_list();
     
     
@@ -46,12 +49,17 @@ private:
         int low2 = -1;
         int low3 = -1;
         int father = -1;
+        int nd;
+       // bool is_tree_edge = false;
     };
     
     vertex** adjacency_list;
     vertex_info_struct* vertex_info;
-    int max_vertices_size = 2; // doulbe when needed. reallocate.
-    int current_vertices_size = 0; //
+    int max_edges_size = 2; // doulbe when needed. reallocate.
+    int max_vertices_size = 2;
+    int current_edges_size = 0; //
+    int current_vertices_size = 0;
+    int time; // used when performing DFS1
 };
 
 
