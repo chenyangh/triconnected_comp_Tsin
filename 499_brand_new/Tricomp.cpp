@@ -21,18 +21,18 @@ graph::~graph()
 }
 
 void graph::print_adjacency_list()
-{   cout << current_vertices_size << "====" <<endl;
+{
     cout << "The current adjacency list is(starting from one):" << endl;
-    for ( int i = 0 ; i < current_vertices_size ; i ++)
+    for ( int i = 0 ; i <= current_vertices_size  ; i ++)
     {
         vertex* current_vertex = adjacency_list[i];
         
         if ( current_vertex->next != nullptr)
         {
-            cout << current_vertex->vertex_id + 1 << "->";
+            cout << current_vertex->vertex_id  << "->";
             while ( current_vertex->next != nullptr )
             {
-                cout << current_vertex->next->vertex_id + 1 ;
+                cout << current_vertex->next->vertex_id  ;
                 if (current_vertex->next->next != nullptr)
                     cout << "->" ;
                 current_vertex = current_vertex->next;
@@ -41,11 +41,10 @@ void graph::print_adjacency_list()
         }
     }
     cout << " =============END==============" << endl;
-    cout << current_vertices_size << "====" <<endl;
     cout << "low1, low2, dfs_number are:" << endl;
-    for ( int i = 0 ; i < current_vertices_size ; i ++ )
+    for ( int i = 1 ; i <= current_vertices_size ; i ++ )
     {
-        cout << "vertex " << i << ": dfs_number = " << vertex_info[i].dfs_number <<  "; low 1 = " << vertex_info[i].low1 <<
+        cout << "vertex " << i  << ": dfs_number = " << vertex_info[i].dfs_number <<  "; low 1 = " << vertex_info[i].low1 <<
         "; low 2 = " << vertex_info[i].low2 << "; father = " << vertex_info[i].father << endl;
     }
 }
@@ -71,12 +70,12 @@ void graph::read_edges_from_file(string path_of_file)
         while( in_file>>first>>second )
         {
             // NOTE: Follwing - 1 depends on the input file
-            int from  = first - 1;
-            int to = second - 1;
+            int from  = first ;
+            int to = second ;
             
-            current_vertices_size = ( from + 1) > current_vertices_size ? (from + 1) : current_vertices_size ;
-           
-            cout << current_vertices_size << endl;
+            // updating edge and vertices size
+            current_vertices_size = from > current_vertices_size ? from  : current_vertices_size ;
+            
             if ( current_vertices_size >= max_vertices_size ) // dealling with maximum vertex size
             {
                 adjacency_list = (vertex ** ) realloc(adjacency_list, sizeof(vertex** ) * max_vertices_size * 2 );
@@ -101,9 +100,6 @@ void graph::read_edges_from_file(string path_of_file)
             {
                 adjacency_list[from]->next = new_vertex;
             }
-            
-            // updating edge and vertices size
-            
         }
         
     } catch ( std::exception &exc ) {
@@ -134,7 +130,7 @@ void graph::dfs_1()
         vertex_info[i].dfs_number = vertex_info[i].father = 0;
     }
     time = 0;
-    int root = 0;
+    int root = 1;
     dfs_1_recur(root);
     
     // has to adjust the adjacency list
@@ -145,17 +141,14 @@ void graph::dfs_1_recur(int v)
 {
     vertex_info[v].dfs_number = time = time + 1;
     vertex_info[v].low1 = vertex_info[v].low2 = vertex_info[v].dfs_number;
-    vertex_info[v].nd = 1;
-    if (adjacency_list[v]->next == nullptr)
-        return;
-    vertex * cur_ver = adjacency_list[v]->next;
     
+    vertex * cur_ver = adjacency_list[v]->next;
     while (cur_ver != nullptr) // FOR w in the adjacency list of v DO
     {
         int w = cur_ver->vertex_id;
         if ( vertex_info[w].dfs_number == 0 )
         {
-           // NOTE  mark vw as a tree edge in P; NOT DONE
+           // NOTE  mark vw as a tree edge in P; NOT DONE and may not be needed
             vertex_info[w].father = v;
             dfs_1_recur(w);
             if ( vertex_info[w].low1 < vertex_info[v].low1 )
@@ -167,11 +160,10 @@ void graph::dfs_1_recur(int v)
                 vertex_info[v].low2 = vertex_info[w].low1;
             else
                 vertex_info[v].low2 = vertex_info[v].low2 < vertex_info[w].low1  ? vertex_info[v].low2 : vertex_info[w].low1; //LOWPT2(v) = MIN{LOWPT2(v), LOWPT1(w)};
-            vertex_info[v].nd = vertex_info[v].nd + vertex_info[w].nd; // NOTE: may not needed.
         }
         else if ( vertex_info[w].dfs_number < vertex_info[v].dfs_number && w != vertex_info[v].father )
         {
-            // NOTE mark vw as a frond in P; NOT DONE
+            // NOTE mark vw as a frond in P; NOT DONE and may not be needed
             if ( vertex_info[w].dfs_number < vertex_info[v].low1 )
             {
                 vertex_info[v].low2 = vertex_info[v].low1;
