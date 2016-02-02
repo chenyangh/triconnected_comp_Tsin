@@ -4,7 +4,7 @@
 //
 //  Created by Chenyang Huang on 2015-08-30.
 //  Copyright (c) 2015 Chenyang Huang. All rights reserved.
-//
+//  
 
 #include <iostream>
 using namespace std;
