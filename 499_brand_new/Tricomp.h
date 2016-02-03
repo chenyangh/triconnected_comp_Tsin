@@ -9,11 +9,8 @@
 #ifndef _99_brand_new_Tricomp_h
 #define _99_brand_new_Tricomp_h
 
-
 #include "Tools.h"
 using namespace std;
-
-
 
 class graph
 {
@@ -25,20 +22,23 @@ public:
     void dfs_1();
     void dfs_1_recur(int);
     
-    void print_adjacency_list();
+    void dfs_2();
+    void dfs_2_recur(int);
     
+    void adjust_adjacency_list(int root);
+    
+    void print_adjacency_list();
     
 private:
     
-    //bool is_graph_start_from_zero = false;  // it depends on how your input file is.
+    // bool is_graph_start_from_zero = false;  // it depends on how your input file is.
     
     struct vertex // data structure for saving information of vertices
     {
         int vertex_id = -1;
-        
-        bool is_visited = false;
+        //bool is_visited = false;
         vertex* in_frond_list = nullptr;
-        //vertex* previous;
+        //vertex * previous;
         vertex* next = nullptr; // i.e. the adjacency list of certain vertex.
     };
     
@@ -50,7 +50,7 @@ private:
         int low3 = -1;
         int father = -1;
         int nd;
-       // bool is_tree_edge = false;
+        //bool is_tree_edge = false;
     };
     
     vertex** adjacency_list;
@@ -61,7 +61,5 @@ private:
     int current_vertices_size = 0;
     int time; // used when performing DFS1
 };
-
-
 
 #endif

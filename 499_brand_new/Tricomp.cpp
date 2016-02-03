@@ -177,12 +177,59 @@ void graph::dfs_1_recur(int v)
             else if ( vertex_info[w].dfs_number > vertex_info[v].low1 )
                 vertex_info[v].low2 =  vertex_info[v].low2 < vertex_info[w].dfs_number ? vertex_info[v].low2 : vertex_info[w].dfs_number; //LOWPT2(v) = MIN{LOWPT2(v), NUMBER(w)};
         }
-        
         cur_ver = cur_ver->next;
+    }
+}
+
+// =======================================================
+// As descripted in Dr. Tsin 's thesis(Decomposing a Multigraph into Split Components),
+// first child or first frond has to be moved forward to the first place of a adjacency list
+// =======================================================
+void graph::adjust_adjacency_list(int u_input)
+{
+    // Seems like the edges have to be divided into fronds and tree edges. HOW ?
+    // another DFS
+    bool * is_vertex_visited = (bool *)malloc( sizeof(bool) *(current_vertices_size +1));
+    memset(is_vertex_visited, false, sizeof(bool)* (current_edges_size+1));
+    
+    for ( int u = u_input ; u <= current_edges_size ; u ++) // travse the adjacency list.  o(|V|+|E|);
+    {
+        is_vertex_visited[u] = true;
+        vertex * cur_ver = adjacency_list[u];
+        vertex * prev_ver = cur_ver; // the adjacency list is stored as single linked, when doing adjust, a previous vertex is needed.
+        int v = cur_ver->next->vertex_id;
+        while ( cur_ver != nullptr) {
+            if ( vertex_info[u].low1 == vertex_info[v].low1 && is_vertex_visited[v] == false ) // first child
+            {
+                prev_ver->next = cur_ver->next;
+                cur_ver->next = adjacency_list[u]->next;
+                adjacency_list[u]->next = cur_ver;
+                break; // once found, quit loop
+            }
+            
+            if ( vertex_info[u].low1 == vertex_info[v].dfs_number && is_vertex_visited[u] == true)
+            {
+                prev_ver->next = cur_ver->next;
+                cur_ver->next = adjacency_list[u]->next;
+                adjacency_list[u]->next = cur_ver;
+                break; // once found, quit loop
+            }
+            
+                
+            cur_ver = cur_ver->next;
+        }
+        
     }
     
     
 }
 
+void graph::dfs_2()
+{
+    
+}
 
-
+void graph::dfs_2_recur(int v)
+{
+    v++;
+}
