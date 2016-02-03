@@ -110,7 +110,7 @@ void graph::read_edges_from_file(string path_of_file)
 //=============================================
 // Perform a first DFS to calcuate LOW1 LOW2 and adjust the adjacancy list
 // to make the first child be the fist entry in the list
-// refered to http://cobweb.cs.uga.edu/~rwr/STUDENTS/fsunms.pdf PAGE 11, and changed
+// refered to Tarjan(1973) and changed
 // recursion to iteration
 // first implement the recursion virsion
 //=============================================
@@ -156,12 +156,15 @@ void graph::dfs_1_recur(int v)
                 vertex_info[v].low2 =  vertex_info[v].low1 < vertex_info[w].low2  ? vertex_info[v].low1 : vertex_info[w].low2; //LOWPT2(v) = MIN{LOWPT1(v), LOWPT2(w)};
                 vertex_info[v].low1 = vertex_info[w].low1;
             }
-            else if ( vertex_info[w].low1 == vertex_info[v].low1 )
-                vertex_info[v].low2 = vertex_info[w].low1;
+            else if ( vertex_info[w].low1 == vertex_info[v].low1 ){
+                //vertex_info[v].low2 = vertex_info[w].low1;
+                vertex_info[v].low2 = vertex_info[v].low2 < vertex_info[w].low2  ? vertex_info[v].low2 : vertex_info[w].low2;
+            }
+            
             else
                 vertex_info[v].low2 = vertex_info[v].low2 < vertex_info[w].low1  ? vertex_info[v].low2 : vertex_info[w].low1; //LOWPT2(v) = MIN{LOWPT2(v), LOWPT1(w)};
         }
-        else if ( vertex_info[w].dfs_number < vertex_info[v].dfs_number && w != vertex_info[v].father )
+        else // if ( vertex_info[w].dfs_number < vertex_info[v].dfs_number && w != vertex_info[v].father )
         {
             // NOTE mark vw as a frond in P; NOT DONE and may not be needed
             if ( vertex_info[w].dfs_number < vertex_info[v].low1 )
@@ -169,9 +172,9 @@ void graph::dfs_1_recur(int v)
                 vertex_info[v].low2 = vertex_info[v].low1;
                 vertex_info[v].low1 = vertex_info[w].dfs_number;
             }
-            else if ( vertex_info[w].dfs_number == vertex_info[v].low1 )
-                vertex_info[v].low2 = vertex_info[w].dfs_number;
-            else
+//            else if ( vertex_info[w].dfs_number == vertex_info[v].low1 )
+//                vertex_info[v].low2 = vertex_info[w].dfs_number;
+            else if ( vertex_info[w].dfs_number > vertex_info[v].low1 )
                 vertex_info[v].low2 =  vertex_info[v].low2 < vertex_info[w].dfs_number ? vertex_info[v].low2 : vertex_info[w].dfs_number; //LOWPT2(v) = MIN{LOWPT2(v), NUMBER(w)};
         }
         
