@@ -32,11 +32,19 @@ public:
 private:
     
     // bool is_graph_start_from_zero = false;  // it depends on how your input file is.
+    enum EDGE_TYPE
+    {
+        TREE_EDGE,
+        FROND_EDGE,
+        NOT_ASSIGNED
+    };
+    
     
     struct vertex // data structure for saving information of vertices
     {
         int vertex_id = -1;
         //bool is_visited = false;
+        EDGE_TYPE edge_type = NOT_ASSIGNED; // the vertex only used for adjacency list thus the ( head node -> linked vertex )  can also reprensts a edge, where only need to put it on the linked vertex )
         vertex* in_frond_list = nullptr;
         //vertex * previous;
         vertex* next = nullptr; // i.e. the adjacency list of certain vertex.
@@ -55,9 +63,9 @@ private:
     
     vertex** adjacency_list;
     vertex_info_struct* vertex_info;
-    int max_edges_size = 2; // doulbe when needed. reallocate.
+    //int max_edges_size = 2; // doulbe when needed. reallocate.
     int max_vertices_size = 2;
-    int current_edges_size = 0; //
+    //int current_edges_size = 0; //
     int current_vertices_size = 0;
     int time; // used when performing DFS1
 };

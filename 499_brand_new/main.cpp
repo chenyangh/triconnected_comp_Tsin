@@ -20,7 +20,8 @@ int main(int argc, const char * argv[]) {
     
      graph_instance->print_adjacency_list();
     // THIRD STEP,
-    
+    graph_instance->adjust_adjacency_list(1);
+    graph_instance->print_adjacency_list();
     
     
     return 0;

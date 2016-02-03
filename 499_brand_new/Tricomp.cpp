@@ -29,24 +29,27 @@ void graph::print_adjacency_list()
         
         if ( current_vertex->next != nullptr)
         {
-            cout << current_vertex->vertex_id  << "->";
+            cout << current_vertex->vertex_id  << "->" ;
             while ( current_vertex->next != nullptr )
             {
-                cout << current_vertex->next->vertex_id  ;
-                if (current_vertex->next->next != nullptr)
-                    cout << "->" ;
                 current_vertex = current_vertex->next;
+                cout << current_vertex->vertex_id << "(" << ( current_vertex->edge_type == TREE_EDGE ? "T" : ( current_vertex->edge_type == FROND_EDGE ? "F" : "NOT ASSIGNED")) << ")"  ;
+                if (current_vertex->next != nullptr)
+                    cout << "->" ;
+                
             }
             cout << endl;
         }
     }
     cout << " =============END==============" << endl;
-    cout << "low1, low2, dfs_number are:" << endl;
-    for ( int i = 1 ; i <= current_vertices_size ; i ++ )
-    {
-        cout << "vertex " << i  << ": dfs_number = " << vertex_info[i].dfs_number <<  "; low 1 = " << vertex_info[i].low1 <<
-        "; low 2 = " << vertex_info[i].low2 << "; father = " << vertex_info[i].father << endl;
-    }
+    
+//    // print out vertex info here. 
+//    cout << "low1, low2, dfs_number are:" << endl;
+//    for ( int i = 1 ; i <= current_vertices_size ; i ++ )
+//    {
+//        cout << "vertex " << i  << ": dfs_number = " << vertex_info[i].dfs_number <<  "; low 1 = " << vertex_info[i].low1 <<
+//        "; low 2 = " << vertex_info[i].low2 << "; father = " << vertex_info[i].father << endl;
+//    }
 }
 
 
@@ -62,7 +65,7 @@ void graph::read_edges_from_file(string path_of_file)
         std::ifstream in_file(path_of_file);
         int first, second;
         adjacency_list = ( vertex ** ) malloc( sizeof(vertex** ) * max_vertices_size );
-        for ( int i = 0 ; i < max_edges_size ; i ++ )
+        for ( int i = 0 ; i < max_vertices_size ; i ++ )
         {
             adjacency_list[i] =  new vertex;
             adjacency_list[i]->vertex_id = i;
@@ -148,7 +151,8 @@ void graph::dfs_1_recur(int v)
         int w = cur_ver->vertex_id;
         if ( vertex_info[w].dfs_number == 0 )
         {
-           // NOTE  mark vw as a tree edge in P; NOT DONE and may not be needed
+           // NOTE  mark vw as a tree edge in P;
+            cur_ver->edge_type = TREE_EDGE;
             vertex_info[w].father = v;
             dfs_1_recur(w);
             if ( vertex_info[w].low1 < vertex_info[v].low1 )
@@ -166,7 +170,8 @@ void graph::dfs_1_recur(int v)
         }
         else // if ( vertex_info[w].dfs_number < vertex_info[v].dfs_number && w != vertex_info[v].father )
         {
-            // NOTE mark vw as a frond in P; NOT DONE and may not be needed
+            // NOTE mark vw as a frond in P;
+            cur_ver->edge_type = FROND_EDGE;
             if ( vertex_info[w].dfs_number < vertex_info[v].low1 )
             {
                 vertex_info[v].low2 = vertex_info[v].low1;
@@ -181,53 +186,71 @@ void graph::dfs_1_recur(int v)
     }
 }
 
+
 // =======================================================
-// As descripted in Dr. Tsin 's thesis(Decomposing a Multigraph into Split Components),
+// As descripted in Dr. Tsin 's thesis(Decomposing a Multigraph into Split Components (2012)),
 // first child or first frond has to be moved forward to the first place of a adjacency list
+// My algorightm to do so has a a worst case of 2|E| which might not be good.
+// NOTE: this can be improved to |E| if the adjacency list is doulbe linked
 // =======================================================
 void graph::adjust_adjacency_list(int u_input)
 {
-    // Seems like the edges have to be divided into fronds and tree edges. HOW ?
-    // another DFS
-    bool * is_vertex_visited = (bool *)malloc( sizeof(bool) *(current_vertices_size +1));
-    memset(is_vertex_visited, false, sizeof(bool)* (current_edges_size+1));
     
-    for ( int u = u_input ; u <= current_edges_size ; u ++) // travse the adjacency list.  o(|V|+|E|);
+    for ( int u = u_input ; u <= current_vertices_size ; u ++) // travse the adjacency list.  o(|V|+|E|);
     {
-        is_vertex_visited[u] = true;
+        // FIRST SCAN
         vertex * cur_ver = adjacency_list[u];
         vertex * prev_ver = cur_ver; // the adjacency list is stored as single linked, when doing adjust, a previous vertex is needed.
-        int v = cur_ver->next->vertex_id;
+        cur_ver = cur_ver->next;
+        
+        
+        bool is_first_child_exist = false;
+        
         while ( cur_ver != nullptr) {
-            if ( vertex_info[u].low1 == vertex_info[v].low1 && is_vertex_visited[v] == false ) // first child
+            // should check first child FIRST, if no such child, go for frond
+            int v = cur_ver->vertex_id;
+            if ( vertex_info[u].low1 == vertex_info[v].low1 && cur_ver->edge_type == TREE_EDGE ) // first child
             {
                 prev_ver->next = cur_ver->next;
                 cur_ver->next = adjacency_list[u]->next;
                 adjacency_list[u]->next = cur_ver;
+                is_first_child_exist = true;
                 break; // once found, quit loop
-            }
-            
-            if ( vertex_info[u].low1 == vertex_info[v].dfs_number && is_vertex_visited[u] == true)
-            {
-                prev_ver->next = cur_ver->next;
-                cur_ver->next = adjacency_list[u]->next;
-                adjacency_list[u]->next = cur_ver;
-                break; // once found, quit loop
-            }
-            
-                
+            }             prev_ver = cur_ver;
             cur_ver = cur_ver->next;
         }
         
+        
+        // SCOND SCAN
+        if ( is_first_child_exist == true )
+            continue;
+        
+        cur_ver = adjacency_list[u];
+        prev_ver = cur_ver; // the adjacency list is stored as single linked, when doing adjust, a previous vertex is needed.
+        cur_ver = cur_ver->next;
+        
+        
+        while ( cur_ver != nullptr) {
+            int v = cur_ver->vertex_id;
+            if ( vertex_info[u].low1 == vertex_info[v].dfs_number && cur_ver->edge_type == FROND_EDGE )
+            {
+                prev_ver->next = cur_ver->next;
+                cur_ver->next = adjacency_list[u]->next;
+                adjacency_list[u]->next = cur_ver;
+                break; // once found, quit loop
+            }
+            cur_ver = cur_ver->next;
+        }
+
     }
-    
-    
 }
+
 
 void graph::dfs_2()
 {
     
 }
+
 
 void graph::dfs_2_recur(int v)
 {
