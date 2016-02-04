@@ -18,9 +18,13 @@ int main(int argc, const char * argv[]) {
     // SECOND STEP, PERFORM THE FIRST DFS,,, ? NOT IMPLEMENTED
     graph_instance->dfs_1();
     
-     graph_instance->print_adjacency_list();
-    // THIRD STEP,
+    graph_instance->print_adjacency_list();
+    
+    // adjust the adjacency list
     graph_instance->adjust_adjacency_list(1);
+    
+    
+    // THIRD STEP,
     graph_instance->print_adjacency_list();
     
     

@@ -23,9 +23,13 @@ public:
     void dfs_1_recur(int);
     
     void dfs_2();
-    void dfs_2_recur(int);
+    void dfs_2_recur(int w, int u);
     
     void adjust_adjacency_list(int root);
+    
+    void gen_split_comp();
+    
+    void coalesce();
     
     void print_adjacency_list();
     
@@ -56,8 +60,8 @@ private:
         int low1 = -1;
         int low2 = -1;
         int low3 = -1;
-        int father = -1;
-        int nd;
+        int parent = -1;
+        bool is_visited;
         //bool is_tree_edge = false;
     };
     
@@ -67,7 +71,13 @@ private:
     int max_vertices_size = 2;
     //int current_edges_size = 0; //
     int current_vertices_size = 0;
-    int time; // used when performing DFS1
+    int time; // used by DFS1
+    
+    
+    
+    int count; // used by DFS2
+    vertex** out_frond_list;
+    vertex** in_frond_list;
 };
 
 #endif

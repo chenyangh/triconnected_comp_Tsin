@@ -17,7 +17,7 @@ graph::graph(int number_of_vertices)
 }
 graph::~graph()
 {
-    
+    // must clean
 }
 
 void graph::print_adjacency_list()
@@ -117,20 +117,19 @@ void graph::read_edges_from_file(string path_of_file)
 // recursion to iteration
 // first implement the recursion virsion
 //=============================================
-
 void graph::dfs_1()
 {
     // initial variabels
-    vertex_info  = (vertex_info_struct * ) malloc( current_vertices_size * sizeof(vertex_info_struct) );
+    vertex_info  = (vertex_info_struct * ) malloc( ( current_vertices_size + 1) * sizeof(vertex_info_struct) );
     if ( vertex_info == nullptr)
     {
         cerr << " NO ENOUGH MEMORY!";
         exit(1);
     }
-    for ( int i = 0 ; i < current_vertices_size ; i ++ )
+    for ( int i = 0 ; i < ( current_vertices_size + 1)  ; i ++ )
     {
         vertex_info[i].low1 = vertex_info[i].low2 = 0;
-        vertex_info[i].dfs_number = vertex_info[i].father = 0;
+        vertex_info[i].dfs_number = vertex_info[i].parent = 0;
     }
     time = 0;
     int root = 1;
@@ -153,7 +152,7 @@ void graph::dfs_1_recur(int v)
         {
            // NOTE  mark vw as a tree edge in P;
             cur_ver->edge_type = TREE_EDGE;
-            vertex_info[w].father = v;
+            vertex_info[w].parent = v;
             dfs_1_recur(w);
             if ( vertex_info[w].low1 < vertex_info[v].low1 )
             {
@@ -168,7 +167,7 @@ void graph::dfs_1_recur(int v)
             else
                 vertex_info[v].low2 = vertex_info[v].low2 < vertex_info[w].low1  ? vertex_info[v].low2 : vertex_info[w].low1; //LOWPT2(v) = MIN{LOWPT2(v), LOWPT1(w)};
         }
-        else // if ( vertex_info[w].dfs_number < vertex_info[v].dfs_number && w != vertex_info[v].father )
+        else
         {
             // NOTE mark vw as a frond in P;
             cur_ver->edge_type = FROND_EDGE;
@@ -177,8 +176,6 @@ void graph::dfs_1_recur(int v)
                 vertex_info[v].low2 = vertex_info[v].low1;
                 vertex_info[v].low1 = vertex_info[w].dfs_number;
             }
-//            else if ( vertex_info[w].dfs_number == vertex_info[v].low1 )
-//                vertex_info[v].low2 = vertex_info[w].dfs_number;
             else if ( vertex_info[w].dfs_number > vertex_info[v].low1 )
                 vertex_info[v].low2 =  vertex_info[v].low2 < vertex_info[w].dfs_number ? vertex_info[v].low2 : vertex_info[w].dfs_number; //LOWPT2(v) = MIN{LOWPT2(v), NUMBER(w)};
         }
@@ -195,7 +192,6 @@ void graph::dfs_1_recur(int v)
 // =======================================================
 void graph::adjust_adjacency_list(int u_input)
 {
-    
     for ( int u = u_input ; u <= current_vertices_size ; u ++) // travse the adjacency list.  o(|V|+|E|);
     {
         // FIRST SCAN
@@ -220,7 +216,6 @@ void graph::adjust_adjacency_list(int u_input)
             cur_ver = cur_ver->next;
         }
         
-        
         // SCOND SCAN
         if ( is_first_child_exist == true )
             continue;
@@ -228,7 +223,6 @@ void graph::adjust_adjacency_list(int u_input)
         cur_ver = adjacency_list[u];
         prev_ver = cur_ver; // the adjacency list is stored as single linked, when doing adjust, a previous vertex is needed.
         cur_ver = cur_ver->next;
-        
         
         while ( cur_ver != nullptr) {
             int v = cur_ver->vertex_id;
@@ -241,18 +235,74 @@ void graph::adjust_adjacency_list(int u_input)
             }
             cur_ver = cur_ver->next;
         }
-
     }
 }
 
+// ==================================================
+// Corresponds to the DFS algorithm shown on Tsin's (2012) Thesis.
+//
+
 
 void graph::dfs_2()
+{
+    count = 1;
+    for ( int i = 1 ; i <= current_vertices_size ; i ++) // make every vertex as unvisited
+        vertex_info[i].is_visited = false;
+    dfs_2_recur(1, 0);
+    
+    out_frond_list = (vertex **) malloc( ( current_vertices_size + 1) * sizeof(vertex*));
+    in_frond_list = (vertex **) malloc( ( current_vertices_size + 1) * sizeof(vertex*));
+    
+}
+
+
+void graph::dfs_2_recur(int w, int v)
+{
+    vertex_info[w].is_visited = true;
+    vertex_info[w].dfs_number = count;
+    count ++;
+    vertex_info[w].parent = v;
+    vertex_info[w].low2 = vertex_info[w].low3 = vertex_info[w].dfs_number;
+    
+    // Pw = w; // NOT DONE // conserdering design of data structure
+    
+    in_frond_list[w] = new vertex;
+    out_frond_list[w] = new vertex;
+    
+    vertex* cur_ver = adjacency_list[w]->next;
+    
+    while (cur_ver != nullptr)
+    {
+        int u = cur_ver->vertex_id;
+        
+        if ( cur_ver->edge_type == TREE_EDGE )
+        {
+            // REPRESENT EDGES
+        }
+        
+        dfs_2_recur(u, w);
+        
+        // P = gen_split_comp();
+        
+        // ...
+        
+        cur_ver = cur_ver->next;
+    }
+    
+    
+}
+
+void graph::gen_split_comp()
+{
+    
+}
+
+void graph::coalesce()
 {
     
 }
 
 
-void graph::dfs_2_recur(int v)
-{
-    v++;
-}
+
+
+
