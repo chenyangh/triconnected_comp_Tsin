@@ -187,7 +187,7 @@ void graph::dfs_1_recur(int v)
 // =======================================================
 // As descripted in Tsin 's paper(Decomposing a Multigraph into Split Components (2012)),
 // first child or first frond has to be moved forward to the first place of a adjacency list
-// My algorightm to do so has a a worst case of 2|E| which might not be good.
+// My implementation to do so has a a worst case of 2|E| which might not be good.
 // NOTE: this can be improved to |E| if the adjacency list is doulbe linked
 // =======================================================
 void graph::adjust_adjacency_list(int u_input)
