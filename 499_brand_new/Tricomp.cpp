@@ -294,6 +294,8 @@ void graph::dfs_2_recur(int w, int v)
 
 void graph::gen_split_comp()
 {
+       
+    
     
 }
 
